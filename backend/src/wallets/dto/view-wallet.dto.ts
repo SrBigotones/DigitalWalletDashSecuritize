@@ -1,6 +1,6 @@
 export type ViewWalletDTO = {
     address: String,
     favorite: Boolean,
-    age?: Date,
+    age?: Number,
     balance: Number,
 }

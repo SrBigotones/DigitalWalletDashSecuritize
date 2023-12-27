@@ -12,9 +12,14 @@ export class WalletsService {
     constructor(@InjectModel(Wallet.name) private walletModel: Model<Wallet>,
         private etherscan: EtherscanService){}
 
-    async add(createWalletDto: AddWalletDTO): Promise<Wallet>{
+    async add(createWalletDto: AddWalletDTO): Promise<ViewWalletDTO>{
         const createdWallet = new this.walletModel(createWalletDto)
-        return createdWallet.save()
+        let apiResponse = await this.etherscan.getWalletInfo(createWalletDto.address)
+        if(apiResponse){
+            await createdWallet.save()
+            return apiResponse
+        }
+        throw new HttpException("Error: Bad request", HttpStatus.BAD_REQUEST)
     }
 
     async updateFavorite(updateWallet: UpdateWalletDTO){
